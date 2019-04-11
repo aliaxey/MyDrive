@@ -1,0 +1,10 @@
+<resources>
+    <string name="server_client_id" translatable="false">146905143995-0s6boqgngv5m32hkilco7v939maa833s.apps.googleusercontent.com</string>
+    <string name="app_name">MyDrive</string>
+
+    <!-- Generated -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="login_btn">Sign in</string>
+    <string name="login_txt">Login to connect to Google Drive</string>
+    <string name="err_login">Login error:</string>
+</resources>

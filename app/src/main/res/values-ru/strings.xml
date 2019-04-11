@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyDrive</string>
+    <string name="login_btn">Войти</string>
+    <string name="login_txt">Нажмите, чтобы войти</string>
+    <string name="err_login">Ошибка входа:</string>
+</resources>
