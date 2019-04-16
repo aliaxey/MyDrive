@@ -19,8 +19,8 @@ private LoginViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentLoginBinding binding = DataBindingUtil.inflate(inflater,R.layout.fragment_login,container,false);
         viewModel = new LoginViewModel(this);
+        FragmentLoginBinding binding = DataBindingUtil.inflate(inflater,R.layout.fragment_login,container,false);
         binding.setVm(viewModel);
         return binding.getRoot();
     }
