@@ -13,9 +13,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.tasks.Task;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
@@ -34,6 +36,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class LoginViewModel {
@@ -60,8 +63,13 @@ public class LoginViewModel {
         drive = new Drive.Builder(AndroidHttp.newCompatibleTransport(),new GsonFactory(), credential)
                 .setApplicationName("MyExample")
                 .build();
-        Observable.create((ObservableOnSubscribe<List<File>>) e-> {
+        Disposable d =  Observable.create((ObservableOnSubscribe<List<File>>) e-> {
             try {
+                File doc = new File().setName("test.txt").setMimeType("text/plain");
+                File folder = new File().setName("Tipo folder").setMimeType(DriveFolder.MIME_TYPE);
+                drive.files().create(folder).execute();
+                ByteArrayContent content = ByteArrayContent.fromString("text/plain","lolkek cheburek \n"+ drive.toString());
+                drive.files().create(doc,content).execute();
                 FileList files = drive
                         .files()
                         .list()
@@ -73,8 +81,8 @@ public class LoginViewModel {
                 e.onError(err);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                n-> {buttonText.set(n.get(0).getName());},
-                e-> {buttonText.set("oops(");}
+                n-> {for(File f:n){buttonText.set(buttonText.get()+f.getName()+"\n"+f.getOriginalFilename()+'\n'+f.getParents());}},
+                e-> {buttonText.set(e.toString());}
                 );
 
         /*
