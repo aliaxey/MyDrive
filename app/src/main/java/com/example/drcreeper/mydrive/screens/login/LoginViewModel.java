@@ -1,43 +1,34 @@
-package com.example.drcreeper.mydrive;
+package com.example.drcreeper.mydrive.screens.login;
 
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.drcreeper.mydrive.R;
+import com.example.drcreeper.mydrive.screens.list.ListFragment;
+import com.example.drcreeper.mydrive.core.Constants;
+import com.example.drcreeper.mydrive.core.DriveApplication;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 
-import java.io.IOException;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 import androidx.databinding.ObservableField;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class LoginViewModel {
     private final ObservableField<String> buttonText = new ObservableField<>("");
@@ -49,20 +40,49 @@ public class LoginViewModel {
         return buttonText;
     }
 
-    public LoginViewModel(Fragment fragment){
+    public LoginViewModel(Fragment fragment) {
         parent = fragment;
     }
 
-    public void login(View v){
-
-
+    public void login(View v) {
         account = GoogleSignIn.getLastSignedInAccount(parent.getContext());
+        if (account == null) {
+            GoogleSignInOptions options = new GoogleSignInOptions
+                    .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestScopes(new Scope(DriveScopes.DRIVE_FILE)).build();
+            GoogleSignInClient client = GoogleSignIn.getClient(parent.getActivity(),options);
+            Intent signIn = client.getSignInIntent();
+            parent.startActivityForResult(signIn, 9000);
+        }else {
+            continueWithAccount();
+        }
+
+    }
+    public void onResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 9000) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                account = task.getResult(ApiException.class);
+                continueWithAccount();
+            } catch (ApiException e) {
+                Toast.makeText(parent.getActivity(),R.string.err_login,Toast.LENGTH_LONG).show();
+                parent.getActivity().finish();
+            }
+        }
+    }
+    private void continueWithAccount(){
         GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(parent.getContext(),
                 Collections.singleton(DriveScopes.DRIVE_FILE));
         credential.setSelectedAccount(account.getAccount());
-        drive = new Drive.Builder(AndroidHttp.newCompatibleTransport(),new GsonFactory(), credential)
-                .setApplicationName("MyExample")
+        drive = new Drive.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
+                .setApplicationName(Constants.SERVER_APP_NAME)
                 .build();
+        DriveApplication.getInstance().setDrive(drive);
+        DriveApplication.getInstance().fragmentSwitch(new ListFragment());
+    }
+}
+        /*
         Disposable d =  Observable.create((ObservableOnSubscribe<List<File>>) e-> {
             try {
                 File doc = new File().setName("test.txt").setMimeType("text/plain");
@@ -85,13 +105,13 @@ public class LoginViewModel {
                 e-> {buttonText.set(e.toString());}
                 );
 
-        /*
+
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().requestScopes(Drive.SCOPE_FILE).build();
         GoogleSignInClient account = GoogleSignIn.getClient(parent.getActivity(),options);
         Intent signIn = account.getSignInIntent();
-        parent.startActivityForResult(signIn, 9000);*/
+        parent.startActivityForResult(signIn, 9000);
 
-    }
+
 
     private List<File> getList(){
         try {
@@ -126,4 +146,11 @@ public class LoginViewModel {
             }
         }
     }
-}
+
+
+
+
+    =)
+
+    */
+

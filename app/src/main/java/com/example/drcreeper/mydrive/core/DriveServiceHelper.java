@@ -1,4 +1,4 @@
-package com.example.drcreeper.mydrive;
+package com.example.drcreeper.mydrive.core;
 
 import android.content.ContentResolver;
 import android.content.Intent;

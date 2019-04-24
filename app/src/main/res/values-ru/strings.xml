@@ -4,4 +4,10 @@
     <string name="login_btn">Войти</string>
     <string name="login_txt">Нажмите, чтобы войти</string>
     <string name="err_login">Ошибка входа:</string>
+    <string name="msg_download_done">Успешно загружено!</string>
+    <string name="err_download">Ошибка при загрузке файла:</string>
+    <string name="err_no_scopes">Не предаставлен доступ к файлам!</string>
+    <string name="upload_btn">Загрузить</string>
+    <string name="msg_upload_done">Успешно загружено на облако!</string>
+    <string name="msg_download_start">Начинается загрузка...</string>
 </resources>

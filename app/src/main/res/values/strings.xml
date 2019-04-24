@@ -3,8 +3,13 @@
     <string name="app_name">MyDrive</string>
 
     <!-- Generated -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="login_btn">Sign in</string>
     <string name="login_txt">Login to connect to Google Drive</string>
     <string name="err_login">Login error:</string>
+    <string name="msg_download_done">Done download!</string>
+    <string name="err_download">Error while file downloading</string>
+    <string name="err_no_scopes">You didn\'t give access</string>
+    <string name="upload_btn">Upload</string>
+    <string name="msg_upload_done">Done uploading!</string>
+    <string name="msg_download_start">Start download...</string>
 </resources>
